@@ -1,6 +1,6 @@
 "use client";
 
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { $generateHtmlFromNodes } from "@lexical/html";
 import { $isLinkNode } from "@lexical/link";
 import {
   $isListNode,
@@ -16,7 +16,6 @@ import { $getNearestNodeOfType, mergeRegister } from "@lexical/utils";
 import type { LexicalNode, RangeSelection } from "lexical";
 import {
   $createParagraphNode,
-  $getRoot,
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
@@ -45,6 +44,7 @@ import {
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/modules/ui/components/tooltip";
 import { cn } from "@/modules/ui/lib/utils";
 import { toEditorOutputHtml } from "../lib/exported-html";
+import { $setRootFromHtml } from "../lib/import-html";
 import type { TextEditorProps } from "./editor";
 
 const LowPriority = 1;
@@ -249,18 +249,7 @@ export const ToolbarPlugin = (
   useEffect(() => {
     if (!props.firstRender) {
       editor.update(() => {
-        const root = $getRoot();
-        if (root) {
-          editor.update(() => {
-            const parser = new DOMParser();
-            // Create a new TextNode
-            const dom = parser.parseFromString(props.getText(), "text/html");
-
-            const nodes = $generateNodesFromDOM(editor, dom);
-            root.clear();
-            root.append(...nodes);
-          });
-        }
+        $setRootFromHtml(editor, props.getText());
       });
     }
     // `props.firstRender` is deliberately NOT a dependency (ENG-3277). The effect below flips it from
@@ -280,13 +269,7 @@ export const ToolbarPlugin = (
     if (props.setFirstRender && props.firstRender) {
       props.setFirstRender(false);
       editor.update(() => {
-        const parser = new DOMParser();
-        const dom = parser.parseFromString(props.getText(), "text/html");
-
-        const nodes = $generateNodesFromDOM(editor, dom);
-        const root = $getRoot();
-        root.clear();
-        root.append(...nodes);
+        $setRootFromHtml(editor, props.getText());
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- one-time firstRender initialization; adding editor/props would re-seed the editor on unrelated changes

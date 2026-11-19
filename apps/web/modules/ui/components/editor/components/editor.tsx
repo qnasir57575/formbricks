@@ -1,6 +1,3 @@
-import { CodeHighlightNode, CodeNode } from "@lexical/code";
-import { AutoLinkNode, LinkNode } from "@lexical/link";
-import { ListItemNode, ListNode } from "@lexical/list";
 import { LINK, TRANSFORMERS } from "@lexical/markdown";
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -11,8 +8,6 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
-import { HeadingNode, QuoteNode } from "@lexical/rich-text";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
 import { type Dispatch, type SetStateAction, useEffect, useRef, useState } from "react";
 import { TSurvey, TSurveyRecallItem } from "@formbricks/types/surveys/types";
 import { cn } from "@/lib/cn";
@@ -24,9 +19,9 @@ import "../styles-editor-frontend.css";
 import "../styles-editor.css";
 import { PlaygroundAutoLinkPlugin as AutoLinkPlugin } from "./auto-link-plugin";
 import { EditorContentChecker } from "./editor-content-checker";
+import { EDITOR_NODES } from "./editor-nodes";
 import { LinkEditor } from "./link-editor";
 import { ListTabIndentationPlugin } from "./list-tab-indentation-plugin";
-import { RecallNode } from "./recall-node";
 import { RecallPlugin } from "./recall-plugin";
 import { ToolbarPlugin } from "./toolbar-plugin";
 
@@ -80,20 +75,7 @@ const editorConfig = {
     throw error;
   },
   namespace: "",
-  nodes: [
-    HeadingNode,
-    ListNode,
-    ListItemNode,
-    QuoteNode,
-    CodeNode,
-    CodeHighlightNode,
-    TableNode,
-    TableCellNode,
-    TableRowNode,
-    AutoLinkNode,
-    LinkNode,
-    RecallNode,
-  ],
+  nodes: EDITOR_NODES,
 };
 
 // LexicalComposer only reads `initialConfig.editable` at mount; without this sync a mounted
